@@ -6,11 +6,12 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common'
-import { CreateWebsiteDto } from './websites.dto'
+import { CreateWebsiteDto, UpdateWebsiteDto } from './websites.dto'
 import { WebsitesService } from './websites.service'
 import { AuthGuard } from '../auth/auth.guard'
 import { Request } from 'express'
@@ -20,7 +21,7 @@ export class WebsitesController {
   constructor(private readonly websitesService: WebsitesService) {}
 
   @UseGuards(AuthGuard)
-  @Post('/create')
+  @Post('create')
   createWebsite(
     @Body() { name, data }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
@@ -44,6 +45,16 @@ export class WebsitesController {
     @Req() request: { user: string } & Request,
   ) {
     return this.websitesService.getUserWebsites(request.user, limit)
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('update/:name')
+  updateWebsite(
+    @Param('name') name: string,
+    @Body() payload: UpdateWebsiteDto,
+    @Req() request: { user: string } & Request,
+  ) {
+    return this.websitesService.updateWebsite(name, request.user, payload)
   }
 
   @UseGuards(AuthGuard)

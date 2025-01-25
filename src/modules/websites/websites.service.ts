@@ -10,7 +10,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Website } from 'schemas/website.schema'
-import { CreateWebsiteDto } from './websites.dto'
+import { CreateWebsiteDto, UpdateWebsiteDto } from './websites.dto'
 import { FileService } from '../file/file.service'
 
 @Injectable()
@@ -69,6 +69,30 @@ export class WebsitesService {
 
       throw new Error('An error occurred')
     }
+  }
+
+  async updateWebsite(name: string, user: string, payload: UpdateWebsiteDto) {
+    const website = await this.websiteModel.findOne({ name }).exec()
+
+    if (payload.name) {
+      const isAlreadyExist = await this.websiteModel
+        .exists({ name: payload.name })
+        .exec()
+      if (isAlreadyExist) throw new ConflictException('The name already exists')
+    }
+
+    if (!website) {
+      throw new NotFoundException(`Website with name "${name}" not found`)
+    }
+
+    if (website.creator !== user) {
+      throw new UnauthorizedException()
+    }
+
+    Object.assign(website, payload)
+    await website.save()
+
+    return website
   }
 
   async deleteWebsite(name: string, user: string) {
