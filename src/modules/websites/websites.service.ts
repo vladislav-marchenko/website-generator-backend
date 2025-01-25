@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
@@ -33,7 +34,7 @@ export class WebsitesService {
     }
   }
 
-  async getWebsite(name: string) {
+  async getWebsite(name: string): Promise<Website> {
     const website = await this.websiteModel.findOne({ name }).exec()
 
     if (!website) {
@@ -43,16 +44,16 @@ export class WebsitesService {
     return website
   }
 
-  async getUserWebsites(userId: string, limit: number | null = null) {
+  async getUserWebsites(user: string, limit: number | null = null) {
     try {
       const websites = await this.websiteModel
-        .find({ creator: userId })
+        .find({ creator: user })
         .limit(limit)
         .exec()
 
       if (!websites.length) {
         throw new NotFoundException(
-          `No websites found for user with ID "${userId}"`,
+          `No websites found for user with ID "${user}"`,
         )
       }
 
@@ -66,11 +67,17 @@ export class WebsitesService {
     }
   }
 
-  async deleteWebsite(name: string) {
-    const { deletedCount } = await this.websiteModel.deleteOne({ name }).exec()
+  async deleteWebsite(name: string, user: string) {
+    const website = await this.websiteModel.findOne({ name }).exec()
 
-    if (deletedCount === 0) {
+    if (!website) {
       throw new NotFoundException(`Website with name "${name}" not found`)
     }
+
+    if (website.creator !== user) {
+      throw new UnauthorizedException()
+    }
+
+    await this.websiteModel.deleteOne({ name }).exec()
   }
 }

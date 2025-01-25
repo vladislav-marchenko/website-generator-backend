@@ -5,6 +5,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { WebsitesModule } from './modules/websites/websites.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { FileModule } from './modules/file/file.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './modules/auth/auth.module'
     ),
     WebsitesModule,
     AuthModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -13,6 +13,7 @@ import {
 import { CreateWebsiteDto } from './websites.dto'
 import { WebsitesService } from './websites.service'
 import { AuthGuard } from '../auth/auth.guard'
+import { Request } from 'express'
 
 @Controller('websites')
 export class WebsitesController {
@@ -48,7 +49,10 @@ export class WebsitesController {
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @Delete(':name')
-  deleteWebsite(@Param('name') name: string) {
-    return this.websitesService.deleteWebsite(name)
+  deleteWebsite(
+    @Param('name') name: string,
+    @Req() request: { user: string } & Request,
+  ) {
+    return this.websitesService.deleteWebsite(name, request.user)
   }
 }
