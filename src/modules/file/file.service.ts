@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common'
@@ -11,7 +13,10 @@ import { WebsitesService } from '../websites/websites.service'
 export class FileService {
   private readonly uploadDir = path.resolve(__dirname, '../../../../uploads')
 
-  constructor(private websiteService: WebsitesService) {
+  constructor(
+    @Inject(forwardRef(() => WebsitesService))
+    private websiteService: WebsitesService,
+  ) {
     fs.mkdir(this.uploadDir, { recursive: true })
   }
 
