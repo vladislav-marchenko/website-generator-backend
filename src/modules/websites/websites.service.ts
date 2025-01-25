@@ -20,13 +20,13 @@ export class WebsitesService {
     @Inject(forwardRef(() => FileService)) private fileService: FileService,
   ) {}
 
-  async createWebsite({
-    name,
-    data,
-    creator,
-  }: { creator: string } & CreateWebsiteDto) {
+  async createWebsite(name: string, data: object, user: string) {
     try {
-      const createdWebsite = new this.websiteModel({ name, data, creator })
+      const createdWebsite = new this.websiteModel({
+        name,
+        data,
+        creator: user,
+      })
       return await createdWebsite.save()
     } catch (error) {
       if (error.code === 11000) {

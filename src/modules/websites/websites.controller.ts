@@ -21,16 +21,13 @@ export class WebsitesController {
   constructor(private readonly websitesService: WebsitesService) {}
 
   @UseGuards(AuthGuard)
-  @Post('create')
+  @Post('create/:name')
   createWebsite(
-    @Body() { name, data }: CreateWebsiteDto,
+    @Param('name') name: string,
+    @Body() { data }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {
-    return this.websitesService.createWebsite({
-      name,
-      data,
-      creator: request.user,
-    })
+    return this.websitesService.createWebsite(name, data, request.user)
   }
 
   @Get(':name')
