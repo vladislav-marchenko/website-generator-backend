@@ -28,6 +28,7 @@ export class WebsitesService {
         throw new ConflictException('Name already exists')
       }
 
+      console.log(error)
       throw new Error('An error occurred while creating the website')
     }
   }

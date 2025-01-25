@@ -27,8 +27,10 @@ export class AuthGuard implements CanActivate {
       })
       request['user'] = payload
     } catch {
-      this.refreshToken(request, response)
+      const payload = this.refreshToken(request, response)
+      request['user'] = payload
     }
+
     return true
   }
 
@@ -44,5 +46,7 @@ export class AuthGuard implements CanActivate {
     const { generateToken } = new AuthService()
     const token = generateToken(publicKey)
     response.setHeader('Authorization', `Bearer ${token}`)
+
+    return publicKey
   }
 }
