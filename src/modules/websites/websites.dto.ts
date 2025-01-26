@@ -8,6 +8,10 @@ import {
 export class CreateWebsiteDto {
   @IsNotEmptyObject()
   data: object
+
+  @IsString()
+  @IsNotEmpty()
+  template: string
 }
 
 export class UpdateWebsiteDto {

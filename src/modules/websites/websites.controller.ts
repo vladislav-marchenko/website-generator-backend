@@ -24,10 +24,15 @@ export class WebsitesController {
   @Post('create/:name')
   createWebsite(
     @Param('name') name: string,
-    @Body() { data }: CreateWebsiteDto,
+    @Body() { template, data }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {
-    return this.websitesService.createWebsite(name, data, request.user)
+    return this.websitesService.createWebsite(
+      name,
+      template,
+      data,
+      request.user,
+    )
   }
 
   @Get(':name')

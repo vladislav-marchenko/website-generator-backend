@@ -10,7 +10,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Website } from 'schemas/website.schema'
-import { CreateWebsiteDto, UpdateWebsiteDto } from './websites.dto'
+import { UpdateWebsiteDto } from './websites.dto'
 import { FileService } from '../file/file.service'
 
 @Injectable()
@@ -20,10 +20,16 @@ export class WebsitesService {
     @Inject(forwardRef(() => FileService)) private fileService: FileService,
   ) {}
 
-  async createWebsite(name: string, data: object, user: string) {
+  async createWebsite(
+    name: string,
+    template: string,
+    data: object,
+    user: string,
+  ) {
     try {
       const createdWebsite = new this.websiteModel({
         name,
+        template,
         data,
         creator: user,
       })

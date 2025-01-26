@@ -8,6 +8,9 @@ export class Website {
   @Prop({ unique: true, required: true })
   name: string
 
+  @Prop({ required: true })
+  template: string
+
   @Prop({ type: Object, required: true })
   data: object
 
