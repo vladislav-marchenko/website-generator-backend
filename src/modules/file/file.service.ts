@@ -53,6 +53,6 @@ export class FileService {
     }
 
     const dirPath = path.join(this.uploadDir, websiteName)
-    await fs.rmdir(dirPath, { recursive: true })
+    await fs.rm(dirPath, { recursive: true, force: true })
   }
 }
