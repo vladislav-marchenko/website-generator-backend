@@ -55,26 +55,12 @@ export class WebsitesService {
   }
 
   async getUserWebsites(user: string, limit: number | null = null) {
-    try {
-      const websites = await this.websiteModel
-        .find({ creator: user })
-        .limit(limit)
-        .exec()
+    const websites = await this.websiteModel
+      .find({ creator: user })
+      .limit(limit)
+      .exec()
 
-      if (!websites.length) {
-        throw new NotFoundException(
-          `No websites found for user with ID "${user}"`,
-        )
-      }
-
-      return websites
-    } catch (error) {
-      if (error.path === 'limit') {
-        throw new BadRequestException('Invalid limit param')
-      }
-
-      throw new Error('An error occurred')
-    }
+    return websites
   }
 
   async updateWebsite(name: string, user: string, payload: UpdateWebsiteDto) {
