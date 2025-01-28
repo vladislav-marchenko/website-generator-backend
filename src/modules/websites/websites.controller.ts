@@ -10,11 +10,13 @@ import {
   Query,
   Req,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common'
 import { CreateWebsiteDto, UpdateWebsiteDto } from './websites.dto'
 import { WebsitesService } from './websites.service'
 import { AuthGuard } from '../auth/auth.guard'
 import { Request } from 'express'
+import { NameValidationPipe } from './name-validation.pipe'
 
 @Controller('websites')
 export class WebsitesController {
@@ -23,7 +25,7 @@ export class WebsitesController {
   @UseGuards(AuthGuard)
   @Post('create/:name')
   createWebsite(
-    @Param('name') name: string,
+    @Param('name', NameValidationPipe) name: string,
     @Body() { template, data }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {

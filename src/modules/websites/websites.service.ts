@@ -11,7 +11,6 @@ import { Model } from 'mongoose'
 import { Website } from 'schemas/website.schema'
 import { UpdateWebsiteDto } from './websites.dto'
 import { FileService } from '../file/file.service'
-import { verifyWebsiteName } from 'src/utils'
 
 @Injectable()
 export class WebsitesService {
@@ -27,7 +26,6 @@ export class WebsitesService {
     user: string,
   ) {
     try {
-      verifyWebsiteName(name)
       const createdWebsite = new this.websiteModel({
         name,
         template,
@@ -66,7 +64,6 @@ export class WebsitesService {
   }
 
   async updateWebsite(name: string, user: string, payload: UpdateWebsiteDto) {
-    verifyWebsiteName(payload.name)
     const website = await this.websiteModel.findOne({ name }).exec()
 
     if (payload.name) {
