@@ -50,7 +50,7 @@ export class WebsitesController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('update/:name')
+  @Put(':name')
   updateWebsite(
     @Param('name') name: string,
     @Body() payload: UpdateWebsiteDto,
