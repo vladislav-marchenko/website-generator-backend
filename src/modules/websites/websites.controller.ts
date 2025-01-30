@@ -10,7 +10,6 @@ import {
   Query,
   Req,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common'
 import { CreateWebsiteDto, UpdateWebsiteDto } from './websites.dto'
 import { WebsitesService } from './websites.service'
@@ -31,13 +30,13 @@ export class WebsitesController {
     @Body() { template, data, signature }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {
-    return this.websitesService.createWebsite(
+    return this.websitesService.createWebsite({
       name,
       template,
       data,
+      user: request.user,
       signature,
-      request.user,
-    )
+    })
   }
 
   @Get(':name')

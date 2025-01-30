@@ -19,13 +19,19 @@ export class WebsitesService {
     @Inject(forwardRef(() => FileService)) private fileService: FileService,
   ) {}
 
-  async createWebsite(
-    name: string,
-    template: string,
-    data: object,
-    user: string,
-    signature: string,
-  ) {
+  async createWebsite({
+    name,
+    template,
+    data,
+    user,
+    signature,
+  }: {
+    name: string
+    template: string
+    data: object
+    user: string
+    signature: string
+  }) {
     try {
       console.log(signature)
 
