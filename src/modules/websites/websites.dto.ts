@@ -13,6 +13,10 @@ export class CreateWebsiteDto {
   @IsString()
   @IsNotEmpty()
   template: string
+
+  @IsString()
+  @IsNotEmpty()
+  signature: string
 }
 
 export class UpdateWebsiteDto {

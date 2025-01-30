@@ -17,22 +17,25 @@ import { WebsitesService } from './websites.service'
 import { AuthGuard } from '../auth/auth.guard'
 import { Request } from 'express'
 import { NameValidationPipe } from './name-validation.pipe'
+import { TransactionGuard } from './websites.guard'
 
 @Controller('websites')
 export class WebsitesController {
   constructor(private readonly websitesService: WebsitesService) {}
 
   @UseGuards(AuthGuard)
+  @UseGuards(TransactionGuard)
   @Post('create/:name')
   createWebsite(
     @Param('name', NameValidationPipe) name: string,
-    @Body() { template, data }: CreateWebsiteDto,
+    @Body() { template, data, signature }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {
     return this.websitesService.createWebsite(
       name,
       template,
       data,
+      signature,
       request.user,
     )
   }

@@ -24,8 +24,11 @@ export class WebsitesService {
     template: string,
     data: object,
     user: string,
+    signature: string,
   ) {
     try {
+      console.log(signature)
+
       const createdWebsite = new this.websiteModel({
         name,
         template,
