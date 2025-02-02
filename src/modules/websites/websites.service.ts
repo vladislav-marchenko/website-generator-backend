@@ -54,7 +54,9 @@ export class WebsitesService {
   }
 
   async getWebsite(name: string): Promise<Website> {
-    const website = await this.websiteModel.findOne({ name }).exec()
+    const website = await this.websiteModel
+      .findOne({ name }, { creator: 0 })
+      .exec()
 
     if (!website) {
       throw new NotFoundException(`Website with name "${name}" not found`)
@@ -65,7 +67,7 @@ export class WebsitesService {
 
   async getUserWebsites(user: string, limit: number | null = null) {
     const websites = await this.websiteModel
-      .find({ creator: user })
+      .find({ creator: user }, { creator: 0 })
       .limit(limit)
       .exec()
 

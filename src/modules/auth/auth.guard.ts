@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
     const response = context.switchToHttp().getResponse()
-    let token = this.extractTokenFromHeader(request)
+    const token = this.extractTokenFromCookies(request)
 
     if (!token) {
       this.refreshToken(request, response)
@@ -34,9 +34,8 @@ export class AuthGuard implements CanActivate {
     return true
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? []
-    return type === 'Bearer' ? token : undefined
+  private extractTokenFromCookies(request: Request): string | undefined {
+    return request.cookies?.token || null
   }
 
   private refreshToken(request: Request, response: Response) {
@@ -45,7 +44,14 @@ export class AuthGuard implements CanActivate {
 
     const { generateToken } = new AuthService()
     const token = generateToken(publicKey)
-    response.setHeader('Authorization', `Bearer ${token}`)
+
+    response.cookie('token', token, {
+      maxAge: 24 * 60 * 60 * 1000,
+      path: '/',
+      secure: true,
+      sameSite: 'none',
+      httpOnly: true,
+    })
 
     return publicKey
   }
