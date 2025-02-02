@@ -41,7 +41,7 @@ export class WebsitesController {
 
   @Get(':name')
   getWebsite(@Param('name') name: string) {
-    return this.websitesService.getWebsite(name)
+    return this.websitesService.getWebsite({ name })
   }
 
   @UseGuards(AuthGuard)

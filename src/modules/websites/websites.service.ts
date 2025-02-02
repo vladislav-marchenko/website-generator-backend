@@ -53,9 +53,15 @@ export class WebsitesService {
     }
   }
 
-  async getWebsite(name: string): Promise<Website> {
+  async getWebsite({
+    name,
+    includeCreator = false,
+  }: {
+    name: string
+    includeCreator?: boolean
+  }): Promise<Website> {
     const website = await this.websiteModel
-      .findOne({ name }, { creator: 0 })
+      .findOne({ name }, { creator: includeCreator })
       .exec()
 
     if (!website) {

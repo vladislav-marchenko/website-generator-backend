@@ -42,7 +42,10 @@ export class FileService {
   }
 
   async deleteFiles(websiteName: string, user: string) {
-    const website = await this.websiteService.getWebsite(websiteName)
+    const website = await this.websiteService.getWebsite({
+      name: websiteName,
+      includeCreator: true,
+    })
 
     if (website.creator !== user) {
       throw new UnauthorizedException()
