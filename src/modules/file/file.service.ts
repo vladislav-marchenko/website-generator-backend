@@ -36,8 +36,7 @@ export class FileService {
     await fs.mkdir(websiteDir, { recursive: true })
 
     for (const file of files) {
-      const extension = path.extname(file.originalname)
-      const filePath = path.join(websiteDir, file.fieldname + extension)
+      const filePath = path.join(websiteDir, file.fieldname)
       await fs.writeFile(filePath, file.buffer)
     }
   }
