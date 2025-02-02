@@ -7,9 +7,11 @@ import {
   Body,
   UseGuards,
   Req,
+  UploadedFiles,
+  HttpCode,
 } from '@nestjs/common'
 import { FileService } from './file.service'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express'
 import { AuthGuard } from '../auth/auth.guard'
 import { Request } from 'express'
 
@@ -19,12 +21,13 @@ export class FileController {
 
   @UseGuards(AuthGuard)
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(AnyFilesInterceptor())
+  @HttpCode(201)
   async uploadFile(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() { websiteName }: { websiteName: string },
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() { name }: { name: string },
   ) {
-    return this.fileService.uploadFile(file, websiteName)
+    return this.fileService.uploadFiles(files, name)
   }
 
   @UseGuards(AuthGuard)

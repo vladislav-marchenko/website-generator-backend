@@ -20,12 +20,12 @@ export class FileService {
     fs.mkdir(this.uploadDir, { recursive: true })
   }
 
-  async uploadFile(
-    file: Express.Multer.File,
+  async uploadFiles(
+    files: Express.Multer.File[],
     websiteName: string,
-  ): Promise<string> {
-    if (!file) {
-      throw new BadRequestException('File is not provided')
+  ): Promise<void> {
+    if (!files.length) {
+      throw new BadRequestException('Files are not provided')
     }
 
     if (!websiteName.length) {
@@ -35,10 +35,11 @@ export class FileService {
     const websiteDir = path.join(this.uploadDir, websiteName)
     await fs.mkdir(websiteDir, { recursive: true })
 
-    const filePath = path.join(websiteDir, file.originalname)
-    await fs.writeFile(filePath, file.buffer)
-
-    return filePath
+    for (const file of files) {
+      const extension = path.extname(file.originalname)
+      const filePath = path.join(websiteDir, file.fieldname + extension)
+      await fs.writeFile(filePath, file.buffer)
+    }
   }
 
   async deleteFiles(websiteName: string, user: string) {
