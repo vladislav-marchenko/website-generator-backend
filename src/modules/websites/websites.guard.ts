@@ -6,11 +6,6 @@ import {
 } from '@nestjs/common'
 import { Connection } from '@solana/web3.js'
 
-type RequestBody = {
-  signature: string
-  transaction: string
-}
-
 @Injectable()
 export class TransactionGuard implements CanActivate {
   private connection: Connection
@@ -20,10 +15,13 @@ export class TransactionGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<{ body: RequestBody }>()
-    const { signature } = request.body
+    const request = context
+      .switchToHttp()
+      .getRequest<{ body: { signature: string } }>()
 
     try {
+      const { signature } = request.body
+
       await this.connection.getParsedTransaction(signature, {
         commitment: 'confirmed',
       })
