@@ -11,13 +11,13 @@ import { WebsitesService } from '../websites/websites.service'
 
 @Injectable()
 export class FileService {
-  private readonly uploadDir = path.resolve(__dirname, '../../../../uploads')
+  private readonly uploadsDir = path.resolve(__dirname, '../../../../uploads')
 
   constructor(
     @Inject(forwardRef(() => WebsitesService))
     private websiteService: WebsitesService,
   ) {
-    fs.mkdir(this.uploadDir, { recursive: true })
+    fs.mkdir(this.uploadsDir, { recursive: true })
   }
 
   async uploadFiles(
@@ -32,7 +32,7 @@ export class FileService {
       throw new BadRequestException('Website name is not provided')
     }
 
-    const websiteDir = path.join(this.uploadDir, websiteName)
+    const websiteDir = path.join(this.uploadsDir, websiteName)
     await fs.mkdir(websiteDir, { recursive: true })
 
     for (const file of files) {
@@ -55,7 +55,7 @@ export class FileService {
       throw new BadRequestException('Website name is not provided')
     }
 
-    const dirPath = path.join(this.uploadDir, websiteName)
+    const dirPath = path.join(this.uploadsDir, websiteName)
     await fs.rm(dirPath, { recursive: true, force: true })
   }
 }

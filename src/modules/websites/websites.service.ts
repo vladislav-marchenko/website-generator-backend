@@ -11,9 +11,13 @@ import { Model } from 'mongoose'
 import { Website } from 'schemas/website.schema'
 import { UpdateWebsiteDto } from './websites.dto'
 import { FileService } from '../file/file.service'
+import { existsSync, renameSync } from 'fs'
+import * as path from 'path'
 
 @Injectable()
 export class WebsitesService {
+  private readonly uploadsDir = path.resolve(__dirname, '../../../../uploads')
+
   constructor(
     @InjectModel(Website.name) private websiteModel: Model<Website>,
     @Inject(forwardRef(() => FileService)) private fileService: FileService,
@@ -83,19 +87,28 @@ export class WebsitesService {
   async updateWebsite(name: string, user: string, payload: UpdateWebsiteDto) {
     const website = await this.websiteModel.findOne({ name }).exec()
 
-    if (payload.name) {
-      const isAlreadyExist = await this.websiteModel
-        .exists({ name: payload.name })
-        .exec()
-      if (isAlreadyExist) throw new ConflictException('The name already exists')
-    }
-
     if (!website) {
       throw new NotFoundException(`Website with name "${name}" not found`)
     }
 
     if (website.creator !== user) {
       throw new UnauthorizedException()
+    }
+
+    const { name: newName } = payload
+
+    if (newName) {
+      const isAlreadyExist = await this.websiteModel
+        .exists({ name: newName })
+        .exec()
+      if (isAlreadyExist) throw new ConflictException('The name already exists')
+
+      if (existsSync(this.uploadsDir + '/' + name)) {
+        renameSync(
+          this.uploadsDir + '/' + name,
+          this.uploadsDir + '/' + newName,
+        )
+      }
     }
 
     Object.assign(website, payload)
