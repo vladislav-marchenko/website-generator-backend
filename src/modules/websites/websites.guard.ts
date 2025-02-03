@@ -24,7 +24,7 @@ export class TransactionGuard implements CanActivate {
     const { signature } = request.body
 
     try {
-      await this.connection.getTransaction(signature, {
+      await this.connection.getParsedTransaction(signature, {
         commitment: 'confirmed',
       })
     } catch {
