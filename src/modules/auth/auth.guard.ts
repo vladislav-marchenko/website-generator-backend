@@ -15,15 +15,22 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
     const response = context.switchToHttp().getResponse()
+
     const token = this.extractTokenFromCookies(request)
+    const publicKey = request.get('Public-Key')
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      let payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.SECRET,
       })
+
+      if (payload !== publicKey) {
+        throw new Error('Invalid public key')
+      }
+
       request['user'] = payload
     } catch {
-      const payload = this.refreshToken(request, response)
+      const payload = this.refreshToken(publicKey, response)
       request['user'] = payload
     }
 
@@ -34,8 +41,7 @@ export class AuthGuard implements CanActivate {
     return request.cookies?.token || null
   }
 
-  private refreshToken(request: Request, response: Response) {
-    const publicKey = request.get('Public-Key')
+  private refreshToken(publicKey: string, response: Response) {
     if (!publicKey) throw new UnauthorizedException()
 
     const { generateToken } = new AuthService()

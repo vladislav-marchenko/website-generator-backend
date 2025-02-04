@@ -11,7 +11,9 @@ export class TransactionGuard implements CanActivate {
   private connection: Connection
 
   constructor() {
-    this.connection = new Connection(clusterApiUrl('devnet'))
+    this.connection = new Connection(
+      'https://white-polished-replica.solana-mainnet.quiknode.pro/9ca678ac0e319dc8d8f694bf9c196ee8100b56eb',
+    )
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
