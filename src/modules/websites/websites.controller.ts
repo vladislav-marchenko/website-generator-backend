@@ -27,7 +27,7 @@ export class WebsitesController {
   @Post('create/:name')
   createWebsite(
     @Param('name', NameValidationPipe) name: string,
-    @Body() { template, data, signature }: CreateWebsiteDto,
+    @Body() { template, data }: CreateWebsiteDto,
     @Req() request: { user: string } & Request,
   ) {
     return this.websitesService.createWebsite({
@@ -35,7 +35,6 @@ export class WebsitesController {
       template,
       data,
       user: request.user,
-      signature,
     })
   }
 
