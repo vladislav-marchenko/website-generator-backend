@@ -4,16 +4,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { clusterApiUrl, Connection } from '@solana/web3.js'
+import { Connection } from '@solana/web3.js'
 
 @Injectable()
 export class TransactionGuard implements CanActivate {
   private connection: Connection
 
   constructor() {
-    this.connection = new Connection(
-      'https://white-polished-replica.solana-mainnet.quiknode.pro/9ca678ac0e319dc8d8f694bf9c196ee8100b56eb',
-    )
+    this.connection = new Connection(process.env.SOLANA_NETWORK_ENDPOINT)
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

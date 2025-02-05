@@ -40,6 +40,7 @@ export class WebsitesService {
         template,
         data,
         creator: user,
+        createdAt: new Date(),
       })
 
       return await createdWebsite.save()

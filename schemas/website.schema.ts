@@ -16,6 +16,9 @@ export class Website {
 
   @Prop({ required: true, length: 32 })
   creator: string
+
+  @Prop({ required: true })
+  createdAt: Date
 }
 
 export const WebsiteSchema = SchemaFactory.createForClass(Website)
