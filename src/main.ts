@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: (origin, callback) => {
-        const allowedOrigins = /^https?:\/\/(.*\.)?localhost:5173$/
+        const allowedOrigins = /^https?:\/\/(.*\.)?162.254.38.16:5173$/
 
         if (allowedOrigins.test(origin)) return callback(null, true)
         return callback(null, false)
